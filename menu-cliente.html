@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu Digital</title>
+    <link rel="stylesheet" href="menu-cliente.css">
+    <link rel="icon" type="image/png" href="assets/4992637.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="main-container">
+        <header class="main-header">
+            <div class="header-content">
+                <div class="search-container">
+                    <input type="text" id="search-bar" placeholder="Buscar no menu...">
+                    <i class="fas fa-search search-icon"></i>
+                </div>
+            </div>
+        </header>
+
+        <main class="content-wrapper">
+            <aside class="sidebar" id="sidebar">
+                <div class="category-list" id="category-list">
+                    </div>
+            </aside>
+            
+            <section class="main-section">
+                <div class="product-grid" id="product-grid">
+                    </div>
+            </section>
+        </main>
+    </div>
+
+    <div class="notes-modal" id="description-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">Detalhes do Item</h3>
+                <span class="close-button" id="close-modal-button">&times;</span>
+            </div>
+            <img id="modal-image" src="" alt="Imagem do Item" style="width: 100%; height: auto; border-radius: 8px; margin-bottom: 15px;">
+            <p id="modal-description">Descrição completa do item virá aqui.</p>
+            <p style="font-size: 20px; font-weight: bold; color: var(--accent-color);">Preço: <span id="modal-price">R$ 0,00</span></p>
+        </div>
+    </div>
+
+    <script src="menu-cliente.js"></script>
+</body>
+</html>
