@@ -141,15 +141,17 @@ body, html {
   flex-direction: column;
   height: 100%;
   padding: 10px;
+  overflow: hidden; /* impede rolagem fora da área de produtos */
 }
 
 .product-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 10px;
-  overflow-y: auto;
   flex-grow: 1;
   padding-bottom: 20px;
+  overflow-y: auto; /* rolagem só aqui */
+  max-height: 100%;
 }
 
 
@@ -256,4 +258,72 @@ body, html {
 .close-button:hover, .close-button:focus {
   color: #333;
   text-decoration: none;
+}
+
+/* MOBILE: Sidebar vira barra horizontal no topo */
+@media (max-width: 700px) {
+  .content-wrapper {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .sidebar {
+    flex-direction: row;
+    width: 100%;
+    height: auto;
+    padding: 0;
+    box-shadow: none;
+    background-color: #2C2C2C;
+    order: 0;
+  }
+
+  .category-list {
+    display: flex;
+    flex-direction: row;
+    padding: 0 5px;
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .category-item {
+    flex: 1 1 0;
+    margin: 5px 3px;
+    padding: 10px 0;
+    justify-content: center;
+    font-size: 14px;
+  }
+
+  .category-icon {
+    margin-right: 0;
+    margin-bottom: 3px;
+    display: block;
+    font-size: 18px;
+  }
+
+  .category-text {
+    display: block;
+    font-size: 12px;
+  }
+
+  .main-section {
+    padding-top: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    height: calc(100vh - 120px); /* ajusta para caber na tela mobile */
+    overflow: hidden;
+  }
+
+  .product-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    max-height: 100%;
+    overflow-y: auto;
+  }
+
+  .product-card {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    margin: 0;
+  }
 }
