@@ -2,16 +2,19 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
 
 :root {
+  /* Novo Esquema de Cores (Vermelho/Marrom) */
   --main-bg-color: #f0f4f8; /* Fundo mais claro */
   --card-bg-color: #ffffff;
-  --header-bg-color: #B51F01; 
+  --header-bg-color: #000000; /* <-- alterado para preto */
+  --dropdown-bg-color: #333333; /* <-- dropdown agora em #333333 */
   --text-color: #333333;
   --light-text-color: #888888;
-  --accent-color: #B51F01; 
-  --highlight-color: #0003c0; 
+  --accent-color: #B78D23; /* <-- botões clicados e preços agora verdes */
+  --highlight-color: #6d1200; 
   --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   --border-radius: 8px;
-  --main-pc-color: #C74900;
+  --header-height: 60px; /* ajuste se precisar de outra altura */
+  --sidebar-width: 320px; /* largura da sidebar no desktop (ajuste se precisar) */
 }
 
 * {
@@ -25,175 +28,254 @@ body, html {
   background-color: var(--main-bg-color);
   color: var(--text-color);
   min-height: 100vh;
-  overflow: hidden;
 }
 
-/* -------------------- LAYOUT PRINCIPAL (DUAS COLUNAS) -------------------- */
+/* -------------------- HEADER E BUSCA -------------------- */
 .main-container {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  min-height: 100vh;
 }
 
-/* Header */
 .main-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px;
   background-color: var(--header-bg-color);
   color: white;
+  padding: 10px 20px;
   box-shadow: var(--shadow);
-  position: relative;
   z-index: 100;
+  position: relative; /* Para posicionamento da logo flutuante */
+  min-height: var(--header-height);
+  display: flex;
+  align-items: center;
 }
 
 .header-content {
   display: flex;
   align-items: center;
+  justify-content: flex-start; /* logo à esquerda do campo de busca */
+  max-width: 1200px;
+  margin: 0 auto;
   width: 100%;
 }
 
-.search-container {
-  flex-grow: 1;
-  display: flex;
-  align-items: center;
-  background-color: #585858;
-  border-radius: var(--border-radius);
-  padding: 8px 12px;
+/* LOGO: Posicionada ao lado esquerdo (antes era absoluta) */
+.header-logo {
+    height: 40px; 
+    width: auto;
+    position: static; /* agora flui com o layout */
+    right: auto;
+    top: auto;
+    margin-right: 14px; /* espaço entre logo e busca */
+    z-index: 101;
 }
 
-.search-container input {
+.search-container {
+  display: flex;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.15);
+  border-radius: var(--border-radius);
+  padding: 5px 10px;
+  max-width: 400px;
+  width: 100%;
+  margin-right: 0; /* removido o espaço para logo à direita */
+  margin-left: 0;
+}
+
+#search-bar {
   flex-grow: 1;
-  background: none;
   border: none;
+  background: none;
   color: white;
+  padding: 5px 10px;
   font-size: 16px;
   outline: none;
 }
 
-.search-container input::placeholder {
-  color: #aeb4b8;
+#search-bar::placeholder {
+  color: rgba(255, 255, 255, 0.7);
 }
 
 .search-icon {
+  color: white;
   margin-left: 10px;
-  color: #aeb4b8;
 }
 
-/* Conteúdo Principal com Sidebar */
+/* -------------------- BARRA DE CATEGORIA PRINCIPAL -------------------- */
 .content-wrapper {
-  display: flex;
   flex-grow: 1;
-  height: calc(100vh - 80px);
-}
-
-/* Sidebar */
-.sidebar {
-  background-color: #2C2C2C;
-  width: 250px;
-  padding: 20px 0;
-  box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-}
-
-.category-list {
-  padding: 0 20px;
-  list-style: none;
-}
-
-.category-item {
-  display: flex;
-  align-items: center;
+  max-width: 1200px;
   width: 100%;
-  background: none;
-  border: none;
-  text-align: left;
-  padding: 12px;
-  margin-bottom: 5px;
-  border-radius: var(--border-radius);
-  cursor: pointer;
-  transition: background-color 0.2s;
-  color: white;
+  margin: 0 auto;
+  padding: 0 20px 20px; /* removido o padding-top para eliminar o espaço branco entre header e dropdown */
+  position: relative; /* Base para o posicionamento absoluto do dropdown */
+  margin-top: 0; /* garante que não haja gap entre header e conteúdo */
 }
 
-.category-item:hover, .category-item.active {
-  background-color: var(--accent-color);
+.category-menu-bar {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 10;
 }
 
-.category-icon {
-  font-size: 20px;
-  margin-right: 15px;
-  color: white;
+.menu-dropdown-toggle {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    background-color: var(--card-bg-color);
+    border: 1px solid #ddd;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-weight: bold;
+    color: var(--text-color);
+    transition: background-color 0.2s;
 }
 
-.category-text {
-  font-size: 16px;
-  color: white;
+.menu-dropdown-toggle:hover {
+    background-color: #f5f5f5;
 }
 
-/* Seção Principal */
-.main-section {
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  padding: 10px;
-  overflow: hidden; /* impede rolagem fora da área de produtos */
+/* Botão ativo (clicado) usa a cor --accent-color */
+.menu-dropdown-toggle.active {
+    background-color: var(--accent-color);
+    color: white;
+    border-color: var(--accent-color);
 }
 
+.menu-dropdown-toggle.active .arrow-icon,
+.menu-dropdown-toggle.active .menu-icon {
+    color: white;
+}
+
+.menu-icon {
+    font-size: 18px;
+    margin-right: 10px;
+    color: var(--accent-color);
+    transition: color 0.2s;
+}
+
+.arrow-icon {
+    font-size: 14px;
+    margin-left: 10px;
+    transition: transform 0.2s;
+}
+
+.menu-dropdown-toggle.active .arrow-icon {
+    transform: rotate(180deg);
+}
+
+/* -------------------- MENU OCULTO (DROPDOWN OVERLAY) - UX 2 -------------------- */
+
+.dropdown-container {
+  position: relative;
+  width: 100vw;           /* ocupa a largura inteira da viewport */
+  left: 50%;
+  transform: translateX(-50%); /* centraliza o full-bleed */
+  max-width: none;
+  margin: 0;              /* remove margem que criava espaço */
+  padding-top: 20px;      /* mantém espaçamento interno para a barra de categorias */
+  padding-bottom: 2px;
+  padding-left: 0;
+  padding-right: 0;
+  box-sizing: border-box;
+  background-color: var(--dropdown-bg-color); /* mesma cor escura */
+  z-index: 90;
+}
+
+/* Ajuste do overlay para ficar posicionado relativo ao novo container */
+.dropdown-overlay {
+  position: absolute;
+  top: calc(100% + 8px); /* aparece logo abaixo da barra de categorias */
+  left: 0;                /* ponta a ponta dentro do full-bleed */
+  right: 0;
+  display: none;
+  z-index: 50;
+}
+
+.dropdown-overlay.show {
+  display: block;
+}
+
+/* Dropdown agora em container escuro semelhante ao header */
+.dropdown-content {
+    background-color: var(--dropdown-bg-color); /* agora #333333 */
+    color: #ffffff; /* texto em branco dentro do dropdown */
+    border-radius: var(--border-radius);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+    padding: 10px;
+    width: 250px; /* Largura do menu oculto */
+    position: absolute; /* Permite o reposicionamento via JS */
+}
+
+.category-item-dropdown {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    background: none;
+    border: none;
+    text-align: left;
+    font-size: 16px;
+    font-weight: 500;
+    color: #ffffff; /* texto branco no dropdown */
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.15s, color 0.15s;
+}
+
+.category-item-dropdown:hover {
+    background-color: rgba(255,255,255,0.06);
+}
+
+.category-item-dropdown.active {
+    background-color: var(--accent-color);
+    color: white;
+}
+.category-item-dropdown.active .category-icon {
+    color: #ffffff;
+}
+
+.category-item-dropdown .category-icon {
+    font-size: 16px;
+    margin-right: 10px;
+    color: var(--accent-color); /* ícones com a mesma cor de destaque */
+    transition: color 0.2s;
+}
+
+/* -------------------- GRADE DE PRODUTOS -------------------- */
 .product-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 10px;
-  flex-grow: 1;
-  padding-bottom: 20px;
-  overflow-y: auto; /* rolagem só aqui */
-  max-height: 100%;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 20px;
+  padding-top: 10px;
 }
 
-
-/* Estilos dos Produtos */
 .product-card {
   background-color: var(--card-bg-color);
   border-radius: var(--border-radius);
-  box-shadow: var(--shadow);
-  display: flex;
-  flex-direction: column;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
   overflow: hidden;
-  text-align: center;
   cursor: pointer;
-  transition: transform 0.2s;
-  width: 210px;           /* largura fixa */
-  height: 270px;          /* altura fixa */
-  min-width: 210px;
-  min-height: 270px;
-  max-width: 210px;
-  max-height: 270px;
-  margin: 0 auto;
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .product-card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-3px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
 }
 
-.product-icon-container,
 .product-image {
   width: 100%;
-  height: 110px;          /* altura fixa para imagem ou ícone */
+  height: 110px;          
   object-fit: cover;
   display: block;
 }
 
 .product-info {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
   padding: 10px;
-  height: 80px;           /* altura fixa para info */
+  height: 80px;           
 }
 
 .product-name {
@@ -205,6 +287,7 @@ body, html {
   white-space: nowrap;
 }
 
+/* Preço dos produtos com a cor de destaque */
 .product-price {
   color: var(--accent-color);
   font-weight: bold;
@@ -212,16 +295,16 @@ body, html {
   margin: 0;
 }
 
-/* Modal de Descrição */
+/* -------------------- MODAL DE DESCRIÇÃO (UX 3) -------------------- */
 .notes-modal {
-  display: none;
+  display: none; 
   position: fixed;
   z-index: 250;
   left: 0;
   top: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.4);
+  background-color: rgba(0, 0, 0, 0.6);
   justify-content: center;
   align-items: center;
 }
@@ -235,8 +318,9 @@ body, html {
   padding: 20px;
   border-radius: var(--border-radius);
   width: 90%;
-  max-width: 400px;
-  text-align: left;
+  max-width: 500px;
+  position: relative;
+  box-shadow: var(--shadow);
 }
 
 .modal-header {
@@ -257,73 +341,321 @@ body, html {
 
 .close-button:hover, .close-button:focus {
   color: #333;
-  text-decoration: none;
 }
 
-/* MOBILE: Sidebar vira barra horizontal no topo */
-@media (max-width: 700px) {
+/* -------------------- RESPONSIVIDADE (MOBILE) -------------------- */
+@media (max-width: 600px) {
+    .header-content {
+        justify-content: space-between;
+    }
+    .header-logo {
+        height: 60px; 
+    }
+    .search-container {
+        max-width: none;
+        margin-right: 0; 
+        flex-grow: 1;
+        margin-left: 10px;
+    }
+    .main-header {
+        padding: 10px;
+    }
+    
+    .category-menu-bar {
+        gap: 10px;
+    }
+    .menu-dropdown-toggle {
+        flex: 1;
+        justify-content: center;
+    }
+    .menu-dropdown-toggle span {
+        display: none; /* Esconde o texto para economizar espaço */
+    }
+    .arrow-icon {
+        margin-left: 5px;
+    }
+    
+    .content-wrapper {
+        padding: 10px;
+    }
+    
+    .dropdown-container {
+    width: 100vw;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  .dropdown-overlay {
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+  }
+    .dropdown-content {
+        max-width: none;
+        width: 100%;
+        transform: none !important; /* Desabilita o ajuste de posição via JS no mobile */
+    }
+    .product-grid {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    }
+  /* remove qualquer padding/margin que crie gap entre header e dropdown */
   .content-wrapper {
-    flex-direction: column;
-    height: auto;
+    padding-top: 0 !important;
+    margin-top: 0 !important;
   }
 
-  .sidebar {
-    flex-direction: row;
-    width: 100%;
-    height: auto;
-    padding: 0;
-    box-shadow: none;
-    background-color: #2C2C2C;
-    order: 0;
+  /* dropdown full-bleed deve "encostar" no header */
+  .dropdown-container {
+    margin-top: 0 !important;
+    padding-top: 15px; /* ajuste fino do espaçamento interno se quiser */
+    background-color: var(--dropdown-bg-color);
   }
 
-  .category-list {
+  /* garante que o overlay apareça imediatamente abaixo da barra (sem espaço branco) */
+  .dropdown-overlay {
+    top: 100% !important;
+  }
+
+  /* se a sombra do header estiver gerando impressão de espaço, pode ajustar aqui
+     comente a linha abaixo se quiser manter a sombra */
+  .main-header {
+    box-shadow: var(--shadow); /* mantenha ou remova conforme preferência */
+    z-index: 100;
+  }
+}
+
+/* =========================
+   Comportamento desejado:
+   - Mobile: dropdown-container fica colado ao header (sem gap),
+             dropdowns em full-bleed logo abaixo do header.
+   - Desktop: dropdowns empilhados numa sidebar à esquerda (sem espaço),
+              conteúdo principal deslocado para a direita,
+              o "modal" do dropdown abre à direita da sidebar e não é cortado.
+   ========================= */
+
+/* MOBILE: garantir que não haja gap entre header e dropdown-container */
+@media (max-width: 600px) {
+  .main-header {
+    z-index: 110; /* garante que o header fique por cima se necessário */
+  }
+
+  .content-wrapper {
+    margin-top: 0;
+    padding-top: 0 !important;
+  }
+
+  .dropdown-container {
+    position: relative;           /* normal flow, abaixo do header */
+    width: 100vw;                 /* full-bleed */
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: none;
+    margin: 0;
+    padding-top: 12px;            /* espaçamento interno para os botões */
+    padding-bottom: 12px;
+    background-color: var(--dropdown-bg-color);
+    box-sizing: border-box;
+    z-index: 100;
+  }
+
+  .dropdown-overlay {
+    position: absolute;
+    top: 100% !important;         /* imediatamente abaixo da barra de categorias */
+    left: 0;
+    right: 0;
+  }
+
+  .dropdown-content {
+    position: relative !important;
+    width: 100% !important;
+    max-width: none;
+    transform: none !important;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.35);
+  }
+}
+
+/* DESKTOP: sidebar fixa à esquerda (sem container full-bleed) */
+@media (min-width: 601px) {
+  /* sidebar fixa encostada na borda esquerda sem espaço em branco */
+  .header-content {
+    position: fixed;
+    justify-content: flex-start; /* logo à esquerda do campo de busca */
+    max-width: calc(1200px + var(--sidebar-width));
+    padding-left: 20px;          /* espaço interno para o conteúdo */
+  }
+  
+  .dropdown-container {
+    position: fixed;
+    top: var(--header-height);
+    left: 150px;;
+    width: var(--sidebar-width);
+    max-width: var(--sidebar-width);
+    height: calc(100vh - var(--header-height));
+    padding: 18px;
+    box-sizing: border-box;
+    background-color: var(--dropdown-bg-color);
+    z-index: 95;
+    overflow-y: auto;    /* rolagem interna da sidebar */
+    overflow-x: visible; /* permite dropdown abrir para a direita */
+    border-radius: 0 8px 8px 0;
+  }
+
+
+  /* reserva espaço à esquerda para a sidebar fixa */
+  .content-wrapper {
+    padding-left: var(--sidebar-width); /* corresponde à largura da sidebar fixa */
+    max-width: calc(1200px + var(--sidebar-width));
+  }
+
+  /* empilha os toggles verticalmente */
+  .category-menu-bar {
     display: flex;
-    flex-direction: row;
-    padding: 0 5px;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 0;
+  }
+
+  .menu-dropdown-toggle {
     width: 100%;
-    justify-content: space-between;
+    justify-content: flex-start;
+    padding: 12px;
+    border-radius: 8px;
+    position: relative;
   }
 
-  .category-item {
-    flex: 1 1 0;
-    margin: 5px 3px;
-    padding: 10px 0;
-    justify-content: center;
-    font-size: 14px;
-  }
-
-  .category-icon {
-    margin-right: 0;
-    margin-bottom: 3px;
+  /* overlay fica estático dentro da sidebar (visível), mas a caixa real aparece à direita */
+  .dropdown-overlay {
+    position: static;
     display: block;
-    font-size: 18px;
+    margin-top: 10px;
+    background: transparent;
+    padding: 0;
   }
 
-  .category-text {
-    display: block;
-    font-size: 12px;
+  /* caixa do dropdown (visível) posicionada à direita da sidebar.
+     max-width garante que nunca ultrapasse a largura disponível da viewport. */
+  .dropdown-content {
+    position: absolute;
+    left: 100%; /* abre imediatamente à direita da sidebar */
+    top: 0;     /* alinhado ao topo da sidebar; JS pode ajustar para alinhar ao botão */
+    width: 420px; /* largura preferencial do dropdown */
+    max-width: calc(100vw - var(--sidebar-width) - 24px); /* reserva folga na viewport */
+    box-sizing: border-box;
+    transform: none !important;
+    padding: 12px;
+    z-index: 999;
+    overflow: auto; /* caso o conteúdo seja maior */
+    box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+    background-color: var(--dropdown-bg-color);
+    color: #fff;
+    border-radius: var(--border-radius);
   }
 
+  /* evita corte lateral do dropdown */
+  .dropdown-container,
+  .dropdown-content {
+    overflow: visible;
+  }
+
+  /* produto / área principal permanece à direita da sidebar */
   .main-section {
-    padding-top: 5px;
-    padding-left: 10px;
-    padding-right: 10px;
-    height: calc(100vh - 120px); /* ajusta para caber na tela mobile */
+    flex: 1 1 auto;
+    min-height: calc(100vh - var(--header-height));
     overflow: hidden;
+    padding-left: 0;
   }
 
   .product-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 8px;
-    max-height: 100%;
+    max-height: calc(100vh - var(--header-height) - 40px);
     overflow-y: auto;
+    padding-top: 18px;
+  }
+}
+
+/* Desktop: header fixo e rolagem apenas na área de itens */
+@media (min-width: 601px) {
+  /* Header fixo no topo */
+
+  .search-container {
+    position: relative;
+    z-index: 101;
+    max-width: 4000px;
+    margin-right: 20px; /* espaço entre busca e borda direita */
+    margin-left: 120px;
   }
 
+  .header-content {
+    position: fixed;
+    justify-content: flex-start; /* logo à esquerda do campo de busca */
+    max-width: calc(1200px + var(--sidebar-width));
+    padding-left: 20px;          /* espaço interno para o conteúdo */
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100px;
+    background-color: var(--header-bg-color);
+    z-index: 110;
+  }
+
+  .header-logo {
+    height: 100px; 
+    width: auto;
+    position: static; /* agora flui com o layout */
+    right: auto;
+    top: auto;
+    margin-right: 14px; /* espaço entre logo e busca */
+    margin-left: 75px;
+    z-index: 101;
+  }
+  .main-header {
+    position: fixed;
+    padding: 10px;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: var(--header-height);
+    min-height: var(--header-height);
+    z-index: 110;
+  }
+
+  /* Empurra o conteúdo para baixo para não ficar sob o header fixo */
+  .content-wrapper {
+    padding-top: calc(var(--header-height) + 16px); /* 16px é folga visual, ajuste se necessário */
+    /* Mantém o padding-left reservado para a sidebar */
+    padding-left: var(--sidebar-width);
+    max-width: calc(1200px + var(--sidebar-width));
+  }
+
+  /* Sidebar fixa à esquerda (mantém comportamento anterior) */
+  .dropdown-container {
+    top: var(--header-height);
+    padding-top: 50px;
+    left: 150px;
+    position: fixed;
+    height: calc(100vh - var(--header-height));
+    z-index: 105;
+  }
+
+  /* Área principal (onde fica a lista de produtos) */
+  .main-section {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - var(--header-height));
+    margin-left: 0;
+    overflow: hidden; /* impede rolagem global, rolagem fica na grade */
+  }
+
+  /* Grade com rolagem independente */
+  .product-grid {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-top: 30px;
+    max-height: 100%;
+  }
+
+  /* Evita que elementos filhos causem overflow da área principal */
   .product-card {
-    width: 100%;
-    min-width: 0;
     max-width: 100%;
-    margin: 0;
+    box-sizing: border-box;
   }
 }

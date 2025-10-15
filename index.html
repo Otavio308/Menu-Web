@@ -12,6 +12,10 @@
     <div class="main-container">
         <header class="main-header">
             <div class="header-content">
+                <div class="header-logo-container">
+                    <img src="assets/logo.png" alt="Logo Império do Sabor" class="header-logo">
+                </div>
+                
                 <div class="search-container">
                     <input type="text" id="search-bar" placeholder="Buscar no menu...">
                     <i class="fas fa-search search-icon"></i>
@@ -20,14 +24,32 @@
         </header>
 
         <main class="content-wrapper">
-            <aside class="sidebar" id="sidebar">
-                <div class="category-list" id="category-list">
-                    </div>
-            </aside>
             
+            <!-- novo container para abrigar a barra de categorias e os dropdowns -->
+            <div class="dropdown-container">
+                <div class="category-menu-bar">
+                    <div class="menu-dropdown-toggle" data-type="Pratos" id="toggle-pratos">
+                        <i class="fas fa-utensils menu-icon"></i>
+                        <span>Pratos</span>
+                        <i class="fas fa-chevron-down arrow-icon"></i>
+                    </div>
+                    
+                    <div class="menu-dropdown-toggle" data-type="Bebidas" id="toggle-bebidas">
+                        <i class="fas fa-glass-martini-alt menu-icon"></i>
+                        <span>Bebidas</span>
+                        <i class="fas fa-chevron-down arrow-icon"></i>
+                    </div>
+                </div>
+                
+                <div class="dropdown-overlay" id="dropdown-overlay">
+                    <div class="dropdown-content" id="dropdown-content">
+                    </div>
+                </div>
+            </div>
+
             <section class="main-section">
                 <div class="product-grid" id="product-grid">
-                    </div>
+                </div>
             </section>
         </main>
     </div>
