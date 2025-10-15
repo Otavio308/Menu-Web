@@ -583,6 +583,10 @@ body, html {
     margin-left: 120px;
   }
 
+  .dropdown-content{
+    margin-top:40px;
+  }
+
   .header-content {
     position: fixed;
     justify-content: flex-start; /* logo à esquerda do campo de busca */
