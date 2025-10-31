@@ -1,23 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Dados de produtos (estrutura adaptada para o filtro de 2 níveis)
-    const products = [
-        // PRATOS - ENTRADAS
-        { id: 1, name: 'Pão Francês', price: 0.50, type: 'Pratos', category: 'Entradas', image: 'https://redemix.vteximg.com.br/arquivos/ids/214544-1000-1000/6914.jpg?v=638351307421600000', description: 'Um pão crocante e macio, perfeito para qualquer hora do dia.' },
-        { id: 3, name: 'Croissant', price: 4.50, type: 'Pratos', category: 'Entradas', description: 'Clássico croissant amanteigado, crocante por fora e macio por dentro.' },
-        // PRATOS - PRINCIPAL
-        { id: 4, name: 'Torta de Frango', price: 8.00, type: 'Pratos', category: 'Principal', description: 'Torta caseira com recheio cremoso de frango e massa super leve.' },
-        { id: 8, name: 'XTudo', price: 18.00, type: 'Pratos', category: 'Principal', description: 'Sanduíche completo com hambúrguer, ovo, bacon, queijo, presunto e salada.' },
-        { id: 9, name: 'Macarronada', price: 25.00, type: 'Pratos', category: 'Principal', description: 'Massa italiana com molho de tomate e carne moída.' },
-        // PRATOS - SOBREMESAS
-        { id: 2, name: 'Bolo de Chocolate', price: 15.00, type: 'Pratos', category: 'Sobremesas', image: 'assets/bolo.png', description: 'Delicioso bolo de chocolate com cobertura de ganache.' },
-        { id: 7, name: 'Brigadeiro', price: 2.50, type: 'Pratos', category: 'Sobremesas', description: 'O clássico brigadeiro brasileiro, feito com chocolate de alta qualidade.' },
-        // BEBIDAS - REFRIGERANTES
-        { id: 10, name: 'Coca-Cola', price: 7.00, type: 'Bebidas', category: 'Refrigerantes', description: 'Refrigerante Coca-Cola gelado.' },
-        { id: 5, name: 'Guaraná Antarctica', price: 6.00, type: 'Bebidas', category: 'Refrigerantes', description: 'Refrigerante Guaraná Antarctica gelado.' },
-        // BEBIDAS - SUCOS
-        { id: 6, name: 'Suco de Laranja', price: 6.50, type: 'Bebidas', category: 'Sucos', description: 'Suco de laranja natural, espremido na hora.' },
-    ];
-    
     // Estrutura de sub-categorias
     const MENU_STRUCTURE = {
         'Pratos': [
@@ -34,8 +15,9 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // Variáveis de estado
-    let selectedType = null; // Nenhum tipo selecionado por padrão (mostra Pratos + Bebidas)
-    let selectedCategory = 'Todos'; // Inicia mostrando tudo
+    let selectedType = null;
+    let selectedCategory = 'Todos';
+    let products = []; // Array vazio que será preenchido com os dados da API
     
     // Elementos do DOM
     const menuBar = document.querySelector('.category-menu-bar');
@@ -56,6 +38,57 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Funções Utilitárias
     const formatPrice = (price) => `R$ ${price.toFixed(2).replace('.', ',')}`;
+
+    // -------------------- FUNÇÕES DA API --------------------
+    
+    // Função para buscar itens do cardápio da API
+    const fetchItensCardapio = async () => {
+        try {
+            const response = await fetch('http://localhost:3002/sistema/cardapio');
+            if (!response.ok) {
+                throw new Error('Erro ao buscar itens do cardápio');
+            }
+            const itens = await response.json();
+            
+            // Mapear os dados da API para a estrutura esperada pelo frontend
+            products = itens.map(item => {
+                // Mapear categoria do banco para as categorias do frontend
+                let type = 'Pratos';
+                let category = 'Principal';
+                
+                // Adapte este mapeamento conforme suas categorias no banco
+                if (item.nome_categoria && item.nome_categoria.includes('Refrigerantes')) {
+                    type = 'Bebidas';
+                    category = 'Refrigerantes'; // ou 'Sucos' conforme necessário
+                }
+                else if (item.nome_categoria && item.nome_categoria.includes('Sucos')) {
+                    type = 'Bebidas';
+                    category = 'Sucos';
+                }
+                else if (item.nome_categoria && item.nome_categoria.includes('Entrada')) {
+                    category = 'Entradas';
+                } else if (item.nome_categoria && item.nome_categoria.includes('Sobremesa')) {
+                    category = 'Sobremesas';
+                }
+                
+
+                return {
+                    id: item.id_item,
+                    name: item.nome_item,
+                    price: parseFloat(item.valor),
+                    type: type,
+                    category: category,
+                    description: item.descricao || 'Descrição não disponível',
+                    image: item.imagem_url || null // Adicione uma coluna 'imagem_url' no banco se quiser imagens
+                };
+            });
+            
+            filterProducts(); // Renderiza os produtos após carregar
+        } catch (error) {
+            console.error('Erro ao carregar cardápio:', error);
+            productGrid.innerHTML = '<p class="empty-list" style="color: var(--light-text-color); margin-top: 30px;">Erro ao carregar o cardápio. Tente novamente mais tarde.</p>';
+        }
+    };
 
     // -------------------- LÓGICA DO DROPDOWN (MENU OCULTO) --------------------
 
@@ -84,7 +117,6 @@ document.addEventListener('DOMContentLoaded', () => {
         categories.forEach(cat => {
             const button = document.createElement('button');
             button.classList.add('category-item-dropdown');
-            // Mantém o estado ativo na sub-categoria se for a selecionada
             if (cat.category === selectedCategory && type === selectedType) {
                 button.classList.add('active');
             }
@@ -95,7 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Listener para seleção de Sub-Categoria
             button.addEventListener('click', () => {
                 selectedCategory = cat.category;
-                selectedType = type; // Garante que o tipo principal também está setado
+                selectedType = type;
                 filterProducts();
                 closeDropdown(); 
                 
@@ -131,7 +163,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Se o mesmo dropdown já está aberto, desmarca o filtro (mostra tudo) e fecha
         if (sameTypeOpen) {
-            selectedType = null;         // <-- permite mostrar Pratos + Bebidas quando desmarcado
+            selectedType = null;
             selectedCategory = 'Todos';
             closeDropdown();
             filterProducts();
@@ -140,7 +172,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // Abre o dropdown para o novo tipo
-        closeDropdown(); // garante fechamento antes de abrir outro
+        closeDropdown();
         selectedType = newType;
 
         // gerencia visualmente os botões principais
@@ -172,7 +204,10 @@ document.addEventListener('DOMContentLoaded', () => {
         // 3. Filtra pela barra de busca
         const query = (searchBar?.value || '').toLowerCase(); 
         if (query) {
-            filteredProducts = filteredProducts.filter(p => p.name.toLowerCase().includes(query) || p.description.toLowerCase().includes(query));
+            filteredProducts = filteredProducts.filter(p => 
+                p.name.toLowerCase().includes(query) || 
+                p.description.toLowerCase().includes(query)
+            );
         }
         
         renderProducts(filteredProducts);
@@ -213,7 +248,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
     
-    // -------------------- MODAL DE DESCRIÇÃO (UX 3) --------------------
+    // -------------------- MODAL DE DESCRIÇÃO --------------------
     const openDescriptionModal = (productId) => {
         const product = products.find(p => p.id == productId);
         if (product) {
@@ -260,5 +295,5 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // -------------------- INICIALIZAÇÃO --------------------
     updateToggleButtons(); 
-    filterProducts();
+    fetchItensCardapio(); // Carrega os dados da API ao inicializar
 });
